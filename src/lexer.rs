@@ -1,13 +1,25 @@
-pub fn lex_program(src_code: String) {
-    let mut words: Vec<&str> = src_code.split(" ").collect();
+pub fn lex_program(src_code: String) -> Vec<Vec<String>> {
+    let lines: std::str::Lines<'_> = src_code.lines(); // Split src_code into lines
+    let mut lexed_lines: Vec<Vec<String>> = Vec::new();
 
-    words.retain(|&x| x != "");
+    let mut line_num: i32 = 0;
 
-    let tokens: Vec<String> = lex_line(words, Vec::new(), 1);
-    println!("{:?}", tokens)
+    // Iterate through lines
+    for line in lines {
+        line_num += 1;
+
+        let mut words: Vec<&str> = line.split(" ").collect(); // Split line into words
+        words.retain(|&x| x != ""); // Remove whitespace
+    
+        // Lex line and add its tokens to lexed_lines
+        let mut tokens: Vec<String> = lex_line(words, Vec::new(), line_num);
+        lexed_lines.push(tokens);
+    }
+    return lexed_lines
 }
 
 fn lex_line(mut words: Vec<&str>, mut tokens: Vec<String>, line_num: i32) -> Vec<String> {
+    // End of line
     if words.len() == 0 {
         return Vec::new();
     }
